@@ -12,7 +12,7 @@
             this.allowedExtensions = new List<string>()
             {
                 // A list of default extensions that are allowed without the user having to add them by hand
-                "c", "cpp", "cs", "js", "json", "css", "html", "xml", "py", "h"
+                ".c", ".cpp", ".cs", ".js", ".json", ".css", ".html", ".xml", ".py", ".h"
             };
             this.foundExtensions = new Dictionary<string, long>();
 
