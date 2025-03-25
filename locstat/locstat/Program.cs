@@ -51,9 +51,21 @@
 
         public void HandlePath(string path, string[] args)
         {
-            foreach (var arg in args)
-                if (arg == "-R" || arg == "--recursive") // Shitty, make real argument parsing system so that other (unknown) args will fail when given.
+            // TODO : Handle cases where the number of args is not valid (eg: -E with no further params afterwards...)
+            for (int i = 0; i < args.Length; ++i)
+            {
+                if (args[i] == "-R" || args[i] == "--allow-recursive") // Shitty, make real argument parsing system so that other (unknown) args will fail when given.
                     this.config.AllowRecursive = true;
+                else
+                if (args[i] == "-E" || args[i] == "--allowed-extension")
+                {
+                    string[] allowedExtensions = args[i + 1].Split(',');
+                    foreach (var extension in allowedExtensions)
+                        extension.Trim();
+                    List<string> newExtensions = new List<string>(allowedExtensions);
+                    this.config.AllowedExtensions = newExtensions;
+                }
+            }
 
             HandlePath(path);
         }
