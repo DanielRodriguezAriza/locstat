@@ -1,21 +1,33 @@
 ﻿namespace locstat
 {
+    public struct LocStatHandlerConfig
+    {
+        public bool Recursive { get; set; }
+
+        public LocStatHandlerConfig()
+        {
+            this.Recursive = false;
+        }
+    }
+
     public class LocStatHandler
     {
+        LocStatHandlerConfig config;
+
         private long totalLines = 0;
 
         private List<string> allowedExtensions; // Maybe should be renamed to "known" extensions or whatever the fuck idk.
         private Dictionary<string, long> foundExtensions;
 
-        public LocStatHandler()
+        public LocStatHandler(LocStatHandlerConfig config = default)
         {
+            this.config = config;
             this.allowedExtensions = new List<string>()
             {
                 // A list of default extensions that are allowed without the user having to add them by hand
                 ".c", ".cpp", ".cs", ".js", ".json", ".css", ".html", ".xml", ".py", ".h"
             };
             this.foundExtensions = new Dictionary<string, long>();
-
         }
 
         private void AddFoundExtension(string extension, long lineCount)
