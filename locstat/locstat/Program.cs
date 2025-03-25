@@ -66,27 +66,31 @@
 
             FileInfo[] files = directory.GetFiles();
             foreach (var file in files)
-                lineCount += HandleFile(file, extensionData);
+                lineCount += HandleFile(file);
 
             DirectoryInfo[] dirs = directory.GetDirectories();
             foreach (var child in dirs)
-                lineCount += HandleDirectory(child, extensionData);
+                lineCount += HandleDirectory(child);
 
             return lineCount;
         }
 
-        public void HandleFile(string path)
+        public long HandleFile(string path)
         {
             FileInfo fileInfo = new FileInfo(path);
-            HandleFile(fileInfo, null); // TODO : FIXME!
+            return HandleFile(fileInfo);
         }
 
-        public int HandleFile(FileInfo fileInfo, Dictionary<string, int> extensionData)
+        public long HandleFile(FileInfo fileInfo)
         {
+            long lineCount = 0;
+            string fileName = fileInfo.Name;
+            string extension = fileInfo.Extension.ToLowerInvariant();
+
+            if (!this.allowedExtensions.Contains(extension))
+                return 0;
+
             Log($"Handling file: \"{fileInfo.FullName}\"");
-
-            int lineCount = 0;
-
             try
             {
                 using (FileStream file = fileInfo.Open(FileMode.Open, FileAccess.Read))
@@ -98,18 +102,20 @@
                         ++lineCount;
                     }
                 }
-                Console.WriteLine($"[File \"{fileInfo.Name}\"] : {lineCount} lines");
-                
-                string extension = Path.GetExtension(fileInfo.Name);
+
                 if (extensionData.ContainsKey(extension))
                     extensionData[extension] += lineCount;
                 else
                     extensionData.Add(extension, lineCount);
+
+                Log($" - Lines : {lineCount}");
             }
             catch
             {
                 Console.WriteLine($"[File \"{fileInfo.Name}\"] : could not access file!");
             }
+
+            this.totalLines += lineCount;
 
             return lineCount;
         }
