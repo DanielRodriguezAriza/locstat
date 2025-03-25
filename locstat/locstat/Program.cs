@@ -54,12 +54,12 @@
                 throw new Exception("The specified path does not exist!");
             }
 
-            Log($"Total Lines Counted: {totalLines}");
             Log("Lines Per Language:");
             foreach (var entry in foundExtensions)
             {
                 Log($"[\"{entry.Key}\"] : {entry.Value} lines");
             }
+            Log($"Total Lines Counted: {totalLines}");
         }
 
         public long HandleDirectory(string path)
