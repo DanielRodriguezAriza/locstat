@@ -3,11 +3,15 @@
     public class LocStatHandler
     {
         private long totalLines = 0;
-        private Dictionary<string, long> extensionData;
+
+        private List<string> allowedExtensions;
+        private Dictionary<string, long> foundExtensions;
 
         public LocStatHandler()
         {
-            this.extensionData = new Dictionary<string, long>();
+            this.allowedExtensions = new List<string>();
+            this.foundExtensions = new Dictionary<string, long>();
+
         }
 
         private void Log(string msg)
