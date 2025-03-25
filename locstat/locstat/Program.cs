@@ -18,6 +18,16 @@
 
         }
 
+        private void AddFoundExtension(string extension, long lineCount)
+        {
+            if (this.foundExtensions.ContainsKey(extension))
+                this.foundExtensions[extension] += lineCount;
+            else
+                this.foundExtensions.Add(extension, lineCount);
+            totalLines += lineCount;
+        }
+
+
         private void Log(string msg)
         {
             Console.WriteLine(msg);
@@ -58,11 +68,11 @@
             HandleDirectory(dir);
         }
 
-        public int HandleDirectory(DirectoryInfo directory)
+        public long HandleDirectory(DirectoryInfo directory)
         {
             Log($"Handling directory: \"{directory.FullName}\"");
 
-            int lineCount = 0;
+            long lineCount = 0;
 
             FileInfo[] files = directory.GetFiles();
             foreach (var file in files)
@@ -103,19 +113,13 @@
                     }
                 }
 
-                if (extensionData.ContainsKey(extension))
-                    extensionData[extension] += lineCount;
-                else
-                    extensionData.Add(extension, lineCount);
-
                 Log($" - Lines : {lineCount}");
+                AddFoundExtension(extension, lineCount);
             }
             catch
             {
-                Console.WriteLine($"[File \"{fileInfo.Name}\"] : could not access file!");
+                Console.WriteLine($" - ERROR : Could not access file!");
             }
-
-            this.totalLines += lineCount;
 
             return lineCount;
         }
