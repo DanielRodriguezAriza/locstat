@@ -2,11 +2,13 @@
 {
     public struct LocStatHandlerConfig
     {
+        public bool DebugEnabled { get; set; }
         public bool AllowRecursive { get; set; }
-        public List<string> AllowedExtensions;
+        public List<string> AllowedExtensions { get; set; }
 
         public LocStatHandlerConfig()
         {
+            this.DebugEnabled = false;
             this.AllowRecursive = false;
             this.AllowedExtensions = new List<string>()
             {
@@ -49,6 +51,12 @@
             Console.WriteLine(msg);
         }
 
+        private void DebugLog(string msg)
+        {
+            if (this.config.DebugEnabled)
+                Log(msg);
+        }
+
         public void HandlePath(string path, string[] args)
         {
             // TODO : Handle cases where the number of args is not valid (eg: -E with no further params afterwards...)
@@ -72,7 +80,7 @@
 
         public void HandlePath(string path)
         {
-            Log($"Running LocStat on path: {path}");
+            DebugLog($"Running LocStat on path: {path}");
 
             bool isDirectory = Directory.Exists(path);
             bool isFile = File.Exists(path);
@@ -92,10 +100,12 @@
             }
 
             Log("Lines Per Language:");
+            Log("{");
             foreach (var entry in foundExtensions)
             {
-                Log($"[\"{entry.Key}\"] : {entry.Value} lines");
+                Log($"  \"{entry.Key}\" : {entry.Value}, ");
             }
+            Log("}");
             Log($"Total Lines Counted: {totalLines}");
         }
 
@@ -107,7 +117,7 @@
 
         public long HandleDirectory(DirectoryInfo directory)
         {
-            Log($"Handling directory: \"{directory.FullName}\"");
+            DebugLog($"Handling directory: \"{directory.FullName}\"");
 
             long lineCount = 0;
 
@@ -140,7 +150,7 @@
             if (!this.config.AllowedExtensions.Contains(extension))
                 return 0;
 
-            Log($"Handling file: \"{fileInfo.FullName}\"");
+            DebugLog($"Handling file: \"{fileInfo.FullName}\"");
             try
             {
                 using (FileStream file = fileInfo.Open(FileMode.Open, FileAccess.Read))
@@ -153,12 +163,12 @@
                     }
                 }
 
-                Log($" - Lines : {lineCount}");
+                DebugLog($" - Lines : {lineCount}");
                 AddFoundExtension(extension, lineCount);
             }
             catch
             {
-                Console.WriteLine($" - ERROR : Could not access file!");
+                DebugLog($" - ERROR : Could not access file!");
             }
 
             return lineCount;
