@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.IO;
+using System.Reflection;
 
 namespace locstat
 {
@@ -11,8 +12,15 @@ namespace locstat
             this.extensionData = new Dictionary<string, long>();
         }
 
+        private void Log(string msg)
+        {
+            Console.WriteLine(msg);
+        }
+
         public void Handle(string path)
         {
+            Log($"Running LocStat on path: {path}");
+
             bool isDirectory = Directory.Exists(path);
             bool isFile = File.Exists(path);
 
@@ -40,6 +48,8 @@ namespace locstat
 
         public int HandleDirectory(DirectoryInfo directory, Dictionary<string, int> extensionData)
         {
+            Log($"Handling directory: \"{directory.FullName}\"");
+
             int lineCount = 0;
 
             FileInfo[] files = directory.GetFiles();
@@ -89,6 +99,8 @@ namespace locstat
 
         public int HandleFile(FileInfo fileInfo, Dictionary<string, int> extensionData)
         {
+            Log($"Handling file: \"{fileInfo.FullName}\"");
+
             int lineCount = 0;
 
             try
