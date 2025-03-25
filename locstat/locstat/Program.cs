@@ -1,4 +1,4 @@
-﻿namespace locstat
+﻿namespace LocStat
 {
     public struct LocStatHandlerConfig
     {
