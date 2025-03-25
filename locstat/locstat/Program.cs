@@ -4,46 +4,42 @@ namespace locstat
 {
     public class LocStatHandler
     {
-        public LocStatHandler(string path, string[] extensions)
+        public LocStatHandler(string path)
         {
-            HandlePath(path, extensions);
+            HandlePath(path);
         }
 
-        public int HandlePath(string path, string[] extensions)
+        public int HandlePath(string path)
         {
+            Dictionary<string, int> extensionData = new();
+
             DirectoryInfo directory = new DirectoryInfo(path);
             Console.WriteLine($"Running locstat on path : \"{directory.FullName}\"");
-            int totalLinesCounted = HandleDir(directory, extensions);
+            int totalLinesCounted = HandleDir(directory, extensionData);
             Console.WriteLine($"Total lines counted : {totalLinesCounted}");
+            foreach (var entry in extensionData)
+                Console.WriteLine($"LOC[\"{entry.Key}\"] : {entry.Value} lines");
             return totalLinesCounted;
         }
 
-        public int HandleDir(DirectoryInfo directory, string[] extensions)
+        public int HandleDir(DirectoryInfo directory, Dictionary<string, int> extensionData)
         {
             int lineCount = 0;
 
             FileInfo[] files = directory.GetFiles();
             foreach (var file in files)
-                lineCount += HandleFile(file, extensions);
+                lineCount += HandleFile(file, extensionData);
 
             DirectoryInfo[] dirs = directory.GetDirectories();
             foreach (var child in dirs)
-                lineCount += HandleDir(child, extensions);
+                lineCount += HandleDir(child, extensionData);
 
             return lineCount;
         }
 
-        public int HandleFile(FileInfo fileInfo, string[] extensions)
+        public int HandleFile(FileInfo fileInfo, Dictionary<string, int> extensionData)
         {
             int lineCount = 0;
-            bool canProcess = false;
-
-            foreach (var extension in extensions)
-                if (fileInfo.Name.EndsWith(extension))
-                    canProcess = true;
-
-            if (!canProcess)
-                return 0;
 
             try
             {
@@ -57,11 +53,18 @@ namespace locstat
                     }
                 }
                 Console.WriteLine($"[File \"{fileInfo.Name}\"] : {lineCount} lines");
+                
+                string extension = Path.GetExtension(fileInfo.Name);
+                if (extensionData.ContainsKey(extension))
+                    extensionData[extension] += lineCount;
+                else
+                    extensionData.Add(extension, lineCount);
             }
             catch
             {
                 Console.WriteLine($"[File \"{fileInfo.Name}\"] : could not access file!");
             }
+
             return lineCount;
         }
     }
@@ -70,7 +73,7 @@ namespace locstat
     {
         static void Main(string[] args)
         {
-            LocStatHandler handler = new LocStatHandler("./", new string[] { "cs" });
+            LocStatHandler handler = new LocStatHandler("./");
         }
     }
 }
