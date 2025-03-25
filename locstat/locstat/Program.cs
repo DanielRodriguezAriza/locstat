@@ -45,6 +45,15 @@
             Console.WriteLine(msg);
         }
 
+        public void HandlePath(string path, string[] args)
+        {
+            foreach (var arg in args)
+                if (arg == "-R" || arg == "--recursive") // Shitty, make real argument parsing system so that other (unknown) args will fail when given.
+                    this.config.Recursive = true;
+
+            HandlePath(path);
+        }
+
         public void HandlePath(string path)
         {
             Log($"Running LocStat on path: {path}");
@@ -90,9 +99,12 @@
             foreach (var file in files)
                 lineCount += HandleFile(file);
 
-            DirectoryInfo[] dirs = directory.GetDirectories();
-            foreach (var child in dirs)
-                lineCount += HandleDirectory(child);
+            if (this.config.Recursive)
+            {
+                DirectoryInfo[] dirs = directory.GetDirectories();
+                foreach (var child in dirs)
+                    lineCount += HandleDirectory(child);
+            }
 
             return lineCount;
         }
@@ -142,7 +154,7 @@
         static void Main(string[] args)
         {
             LocStatHandler handler = new LocStatHandler();
-            handler.HandlePath("./");
+            handler.HandlePath("./", args);
         }
     }
 }
