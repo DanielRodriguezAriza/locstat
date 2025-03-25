@@ -1,10 +1,16 @@
 ﻿namespace locstat
 {
-    public class Program
+    public class LocStatHandler
     {
+        public LocStatHandler(string path)
+        {
+            HandlePath(path);
+        }
+
         public int HandlePath(string path)
         {
             DirectoryInfo directory = new DirectoryInfo(path);
+            Console.WriteLine($"Running locstat on path : \"{directory.FullName}\"");
             int totalLinesCounted = HandleDir(directory);
             Console.WriteLine($"Total lines counted : {totalLinesCounted}");
             return totalLinesCounted;
@@ -28,25 +34,32 @@
         public int HandleFile(FileInfo fileInfo)
         {
             int lineCount = 0;
-            using (FileStream file = fileInfo.Open(FileMode.Open, FileAccess.Read))
-            using (TextReader reader = new StreamReader(file))
+            try
             {
-                string? line;
-                while ((line = reader.ReadLine()) != null)
+                using (FileStream file = fileInfo.Open(FileMode.Open, FileAccess.Read))
+                using (TextReader reader = new StreamReader(file))
                 {
-                    ++lineCount;
+                    string? line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        ++lineCount;
+                    }
                 }
+                Console.WriteLine($"[File \"{fileInfo.Name}\"] : {lineCount} lines");
             }
-            Console.WriteLine($"[File \"{fileInfo.Name}\"] : {lineCount} lines");
+            catch
+            {
+                Console.WriteLine($"[File \"{fileInfo.Name}\"] : could not access file!");
+            }
             return lineCount;
         }
+    }
 
+    public class Program
+    {
         static void Main(string[] args)
         {
-            DirectoryInfo directory = new DirectoryInfo("./");
-            Console.WriteLine($"Running locstat on path : \"{directory.FullName}\"");
-
-            DirectoryInfo[] childDirectories = directory.GetDirectories();
+            LocStatHandler handler = new LocStatHandler("./");
         }
     }
 }
