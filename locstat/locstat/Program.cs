@@ -62,10 +62,10 @@
             }
         }
 
-        public void HandleDirectory(string path)
+        public long HandleDirectory(string path)
         {
             DirectoryInfo dir = new DirectoryInfo(path);
-            HandleDirectory(dir);
+            return HandleDirectory(dir);
         }
 
         public long HandleDirectory(DirectoryInfo directory)
