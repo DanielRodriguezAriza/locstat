@@ -2,31 +2,35 @@
 {
     public struct LocStatHandlerConfig
     {
-        public bool Recursive { get; set; }
+        public bool AllowRecursive { get; set; }
+        public List<string> AllowedExtensions;
 
         public LocStatHandlerConfig()
         {
-            this.Recursive = false;
+            this.AllowRecursive = false;
+            this.AllowedExtensions = new List<string>()
+            {
+                // A list of default extensions that are allowed without the user having to add them by hand
+                ".c", ".cpp", ".cs", ".js", ".json", ".css", ".html", ".xml", ".py", ".h"
+            };
         }
     }
 
     public class LocStatHandler
     {
         LocStatHandlerConfig config;
-
         private long totalLines = 0;
-
-        private List<string> allowedExtensions; // Maybe should be renamed to "known" extensions or whatever the fuck idk.
         private Dictionary<string, long> foundExtensions;
 
-        public LocStatHandler(LocStatHandlerConfig config = default)
+        public LocStatHandler(LocStatHandlerConfig config)
         {
             this.config = config;
-            this.allowedExtensions = new List<string>()
-            {
-                // A list of default extensions that are allowed without the user having to add them by hand
-                ".c", ".cpp", ".cs", ".js", ".json", ".css", ".html", ".xml", ".py", ".h"
-            };
+            this.foundExtensions = new Dictionary<string, long>();
+        }
+
+        public LocStatHandler()
+        {
+            this.config = new LocStatHandlerConfig();
             this.foundExtensions = new Dictionary<string, long>();
         }
 
@@ -49,7 +53,7 @@
         {
             foreach (var arg in args)
                 if (arg == "-R" || arg == "--recursive") // Shitty, make real argument parsing system so that other (unknown) args will fail when given.
-                    this.config.Recursive = true;
+                    this.config.AllowRecursive = true;
 
             HandlePath(path);
         }
@@ -99,7 +103,7 @@
             foreach (var file in files)
                 lineCount += HandleFile(file);
 
-            if (this.config.Recursive)
+            if (this.config.AllowRecursive)
             {
                 DirectoryInfo[] dirs = directory.GetDirectories();
                 foreach (var child in dirs)
@@ -121,7 +125,7 @@
             string fileName = fileInfo.Name;
             string extension = fileInfo.Extension.ToLowerInvariant();
 
-            if (!this.allowedExtensions.Contains(extension))
+            if (!this.config.AllowedExtensions.Contains(extension))
                 return 0;
 
             Log($"Handling file: \"{fileInfo.FullName}\"");
