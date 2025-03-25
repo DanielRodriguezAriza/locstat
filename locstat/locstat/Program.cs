@@ -63,7 +63,9 @@
             for (int i = 0; i < args.Length; ++i)
             {
                 if (args[i] == "-R" || args[i] == "--allow-recursive") // Shitty, make real argument parsing system so that other (unknown) args will fail when given.
+                {
                     this.config.AllowRecursive = true;
+                }
                 else
                 if (args[i] == "-E" || args[i] == "--allowed-extension")
                 {
@@ -72,6 +74,11 @@
                         extension.Trim();
                     List<string> newExtensions = new List<string>(allowedExtensions);
                     this.config.AllowedExtensions = newExtensions;
+                }
+                else
+                if (args[i] == "-D" || args[i] == "--debug-enabled")
+                {
+                    this.config.DebugEnabled = bool.Parse(args[i + 1]);
                 }
             }
 
