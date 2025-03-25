@@ -4,12 +4,16 @@
     {
         private long totalLines = 0;
 
-        private List<string> allowedExtensions;
+        private List<string> allowedExtensions; // Maybe should be renamed to "known" extensions or whatever the fuck idk.
         private Dictionary<string, long> foundExtensions;
 
         public LocStatHandler()
         {
-            this.allowedExtensions = new List<string>();
+            this.allowedExtensions = new List<string>()
+            {
+                // A list of default extensions that are allowed without the user having to add them by hand
+                "c", "cpp", "cs", "js", "json", "css", "html", "xml", "py", "h"
+            };
             this.foundExtensions = new Dictionary<string, long>();
 
         }
