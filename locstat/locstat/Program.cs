@@ -55,10 +55,10 @@
         public void HandleDirectory(string path)
         {
             DirectoryInfo dir = new DirectoryInfo(path);
-            HandleDirectory(dir, null); // TODO : FIXME! don't pass null
+            HandleDirectory(dir);
         }
 
-        public int HandleDirectory(DirectoryInfo directory, Dictionary<string, int> extensionData)
+        public int HandleDirectory(DirectoryInfo directory)
         {
             Log($"Handling directory: \"{directory.FullName}\"");
 
@@ -79,23 +79,6 @@
         {
             FileInfo fileInfo = new FileInfo(path);
             HandleFile(fileInfo, null); // TODO : FIXME!
-        }
-
-        
-
-        public int HandleDir(DirectoryInfo directory, Dictionary<string, int> extensionData)
-        {
-            int lineCount = 0;
-
-            FileInfo[] files = directory.GetFiles();
-            foreach (var file in files)
-                lineCount += HandleFile(file, extensionData);
-
-            DirectoryInfo[] dirs = directory.GetDirectories();
-            foreach (var child in dirs)
-                lineCount += HandleDir(child, extensionData);
-
-            return lineCount;
         }
 
         public int HandleFile(FileInfo fileInfo, Dictionary<string, int> extensionData)
