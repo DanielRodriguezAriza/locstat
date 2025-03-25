@@ -46,23 +46,10 @@
 
             Log($"Total Lines Counted: {totalLines}");
             Log("Lines Per Language:");
-            foreach (var entry in extensionData)
+            foreach (var entry in foundExtensions)
             {
                 Log($"[\"{entry.Key}\"] : {entry.Value} lines");
             }
-        }
-
-        public int HandlePath(string path)
-        {
-            Dictionary<string, int> extensionData = new();
-
-            DirectoryInfo directory = new DirectoryInfo(path);
-            Console.WriteLine($"Running locstat on path : \"{directory.FullName}\"");
-            int totalLinesCounted = HandleDir(directory, extensionData);
-            Console.WriteLine($"Total lines counted : {totalLinesCounted}");
-            foreach (var entry in extensionData)
-                Console.WriteLine($"LOC[\"{entry.Key}\"] : {entry.Value} lines");
-            return totalLinesCounted;
         }
 
         public void HandleDirectory(string path)
