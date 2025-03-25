@@ -1,10 +1,8 @@
-﻿using System.IO;
-using System.Reflection;
-
-namespace locstat
+﻿namespace locstat
 {
     public class LocStatHandler
     {
+        private long totalLines = 0;
         private Dictionary<string, long> extensionData;
 
         public LocStatHandler()
@@ -17,7 +15,7 @@ namespace locstat
             Console.WriteLine(msg);
         }
 
-        public void Handle(string path)
+        public void HandlePath(string path)
         {
             Log($"Running LocStat on path: {path}");
 
@@ -27,18 +25,37 @@ namespace locstat
             if (isDirectory)
             {
                 HandleDirectory(path);
-                return;
             }
-
+            else
             if (isFile)
             {
                 HandleFile(path);
-                return;
+            }
+            else
+            {
+                throw new Exception("The specified path does not exist!");
             }
 
-            throw new Exception("The specified path does not exist!");
+            Log($"Total Lines Counted: {totalLines}");
+            Log("Lines Per Language:");
+            foreach (var entry in extensionData)
+            {
+                Log($"[\"{entry.Key}\"] : {entry.Value} lines");
+            }
         }
 
+        public int HandlePath(string path)
+        {
+            Dictionary<string, int> extensionData = new();
+
+            DirectoryInfo directory = new DirectoryInfo(path);
+            Console.WriteLine($"Running locstat on path : \"{directory.FullName}\"");
+            int totalLinesCounted = HandleDir(directory, extensionData);
+            Console.WriteLine($"Total lines counted : {totalLinesCounted}");
+            foreach (var entry in extensionData)
+                Console.WriteLine($"LOC[\"{entry.Key}\"] : {entry.Value} lines");
+            return totalLinesCounted;
+        }
 
         public void HandleDirectory(string path)
         {
@@ -69,18 +86,7 @@ namespace locstat
             HandleFile(fileInfo, null); // TODO : FIXME!
         }
 
-        public int HandlePath(string path)
-        {
-            Dictionary<string, int> extensionData = new();
-
-            DirectoryInfo directory = new DirectoryInfo(path);
-            Console.WriteLine($"Running locstat on path : \"{directory.FullName}\"");
-            int totalLinesCounted = HandleDir(directory, extensionData);
-            Console.WriteLine($"Total lines counted : {totalLinesCounted}");
-            foreach (var entry in extensionData)
-                Console.WriteLine($"LOC[\"{entry.Key}\"] : {entry.Value} lines");
-            return totalLinesCounted;
-        }
+        
 
         public int HandleDir(DirectoryInfo directory, Dictionary<string, int> extensionData)
         {
