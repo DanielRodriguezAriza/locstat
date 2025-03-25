@@ -4,9 +4,11 @@ namespace locstat
 {
     public class LocStatHandler
     {
-        public LocStatHandler(string path)
+        private Dictionary<string, long> extensionData;
+
+        public LocStatHandler()
         {
-            HandlePath(path);
+            this.extensionData = new Dictionary<string, long>();
         }
 
         public void Handle(string path)
@@ -121,7 +123,8 @@ namespace locstat
     {
         static void Main(string[] args)
         {
-            LocStatHandler handler = new LocStatHandler("./");
+            LocStatHandler handler = new LocStatHandler();
+            handler.HandlePath("./");
         }
     }
 }
