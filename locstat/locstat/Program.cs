@@ -153,7 +153,12 @@
             this.helpWasExecuted = true;
             Log("Help:");
             foreach (var cmd in commands)
-                Log($"{cmd.ShortCommand} {cmd.LongCommand} {cmd.Arguments} {cmd.Description}");
+            {
+                string argsString = "";
+                foreach(var str in cmd.Arguments)
+                    argsString += str + " ";
+                Log($"    {cmd.ShortCommand}, {cmd.LongCommand} {argsString}{cmd.Description}");
+            }
         }
 
         private void CmdAllowRecursive(string cmdName, string[] args, int index)
