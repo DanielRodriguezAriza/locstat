@@ -6,7 +6,7 @@
         public string LongCommand { get; set; }
         public string[] Arguments { get; set; }
         public string Description { get; set; }
-        public Action<string[], int> Function { get; set; }
+        public Action<string, string[], int> Function { get; set; }
     }
 
     public struct LocStatHandlerConfig
@@ -60,7 +60,7 @@
                     LongCommand = "--allowed-extensions",
                     Arguments = new string[] { "<mode>", "<extensions>" },
                     Description = "Allow only the specified extensions to be counted. The extensions are specified in a comma separated string. Modes are: set, add, remove",
-                    Function = null
+                    Function = CmdAllowedExtensions
                 },
                 new Command
                 {
@@ -85,16 +85,40 @@
             Console.WriteLine(msg);
         }
 
-        private void CmdHelp(string[] args, int index)
+        private void CmdHelp(string cmdName, string[] args, int index)
         {
             Log("Help:");
             foreach (var cmd in commands)
                 Log($"{cmd.ShortCommand} {cmd.LongCommand} {cmd.Arguments} {cmd.Description}");
         }
 
-        private void CmdAllowRecursive(string[] args, int index)
+        private void CmdAllowRecursive(string cmdName, string[] args, int index)
         {
             this.config.AllowRecursive = true;
+        }
+
+        private void CmdAllowedExtensions(string cmdName, string[] args, int index)
+        {
+            string modeString = args[index + 1].ToLowerInvariant();
+            string extensionsString = args[index + 2].ToLowerInvariant();
+
+            string[] extensions = extensionsString.Split(',');
+
+            switch (modeString)
+            {
+                case "set":
+                    this.config.AllowedExtensions = new List<string>(extensions);
+                    break;
+                case "add":
+                    this.config.AllowedExtensions.AddRange(extensions);
+                    break;
+                case "remove":
+                    foreach (var ext in extensions)
+                        this.config.AllowedExtensions.Remove(ext);
+                    break;
+                default:
+                    throw new Exception($"Unknown mode for command {cmdName} : \"{modeString}\"");
+            }
         }
     }
 
