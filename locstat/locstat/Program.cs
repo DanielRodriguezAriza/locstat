@@ -275,6 +275,16 @@
 
             return lineCount;
         }
+
+        public void SetConfig(LocStatHandlerConfig config)
+        {
+            this.config = config;
+        }
+
+        public LocStatHandlerConfig GetConfig()
+        {
+            return this.config;
+        }
     }
 
     public class Program
