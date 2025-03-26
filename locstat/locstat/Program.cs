@@ -29,6 +29,13 @@
 
     public class LocStatProgram
     {
+        // Aux exception class so that we can use them as control flow of sorts and not print a whole stack trace.
+        private class LocStatException : Exception
+        {
+            public LocStatException(string? message) : base(message)
+            { }
+        }
+
         private LocStatHandler handler;
         private Command[] commands;
         private string path;
@@ -86,7 +93,15 @@
 
         public void Run(string[] args)
         {
-            ParseCommands(args);
+            try
+            {
+                ParseCommands(args);
+            }
+            catch (LocStatException e)
+            {
+                Log(e.Message);
+                return;
+            }
 
             // Do not run any code if the user has asked for help
             if (this.helpWasExecuted)
@@ -100,7 +115,7 @@
             for(int i = 0; i < args.Length; ++i)
             {
                 var arg = args[i];
-                int argsRemaining = arg.Length - i - 1;
+                int argsRemaining = arg.Length - i;
 
                 bool commandFound = false;
                 foreach (var cmd in this.commands)
@@ -111,7 +126,7 @@
 
                         if (argsRemaining < cmd.Arguments.Length)
                         {
-                            throw new Exception($"Not enough arguments found : {cmd.Arguments.Length} were expected, but {argsRemaining} were found!");
+                            throw new LocStatException($"Not enough arguments found : {cmd.Arguments.Length} were expected, but {argsRemaining} were found!");
                         }
 
                         cmd.Function(cmd.LongCommand, args, i);
@@ -123,7 +138,7 @@
 
                 if (!commandFound)
                 {
-                    throw new Exception($"Unknown argument found : \"{arg}\"");
+                    throw new LocStatException($"Unknown argument found : \"{arg}\"");
                 }
             }
         }
@@ -166,7 +181,7 @@
                         this.handler.Config.AllowedExtensions.Remove(ext);
                     break;
                 default:
-                    throw new Exception($"Unknown mode for command {cmdName} : \"{modeString}\"");
+                    throw new LocStatException($"Unknown mode for command {cmdName} : \"{modeString}\"");
             }
         }
 
