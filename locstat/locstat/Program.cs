@@ -31,10 +31,11 @@
     {
         private LocStatHandler handler;
         private Command[] commands;
+        private LocStatHandlerConfig config;
 
         public LocStatHandlerProgram()
         {
-            this.handler = new LocStatHandler();
+            this.config = new LocStatHandlerConfig();
             this.commands = new Command[]
             {
                 new Command
@@ -51,7 +52,7 @@
                     LongCommand = "--allow-recursive",
                     Arguments = new string[] { },
                     Description = "Allow recursively searching through child directories for files.",
-                    Function = null
+                    Function = CmdAllowRecursive
                 },
                 new Command
                 {
@@ -75,6 +76,8 @@
         public void Run(string[] args)
         {
 
+            this.handler = new LocStatHandler(this.config);
+            this.handler.HandlePath("./"); // TODO : Maybe improve and add a custom path param so that we can specify the path manually? altough it's pretty nice to just run it anywhere you invoke it with no extra args, so yeah... maybe make path default to ./ if no args are given?
         }
 
         private void Log(string msg)
@@ -88,11 +91,16 @@
             foreach (var cmd in commands)
                 Log($"{cmd.ShortCommand} {cmd.LongCommand} {cmd.Arguments} {cmd.Description}");
         }
+
+        private void CmdAllowRecursive(string[] args, int index)
+        {
+            this.config.AllowRecursive = true;
+        }
     }
 
     public class LocStatHandler
     {
-        LocStatHandlerConfig config;
+        private LocStatHandlerConfig config;
         private long totalLines = 0;
         private Dictionary<string, long> foundExtensions;
 
