@@ -114,9 +114,8 @@
         {
             for(int i = 0; i < args.Length; ++i)
             {
+                int argsRemaining = args.Length - i - 1;
                 var arg = args[i];
-                int argsRemaining = arg.Length - i;
-
                 bool commandFound = false;
                 foreach (var cmd in this.commands)
                 {
