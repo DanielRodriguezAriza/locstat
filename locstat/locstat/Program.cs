@@ -281,8 +281,8 @@
     {
         static void Main(string[] args)
         {
-            LocStatHandler handler = new LocStatHandler();
-            // handler.HandlePath("./", args);
+            LocStatProgram program = new LocStatProgram();
+            program.Run(args);
         }
     }
 }
