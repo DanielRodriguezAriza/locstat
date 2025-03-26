@@ -74,7 +74,7 @@
                 },
                 new Command
                 {
-                    ShortCommand = "-p",
+                    ShortCommand = "-P",
                     LongCommand = "--path",
                     Arguments = new string[] { "<path>"},
                     Description = "Specify the path where the command will be executed.",
