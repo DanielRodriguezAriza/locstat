@@ -112,9 +112,10 @@
 
         private void ParseCommands(string[] args)
         {
-            for(int i = 0; i < args.Length; ++i)
+            int argsRemaining = 0; // WARNING : DO NOT PLACE THIS VARIABLE INSIDE OF THE FOR LOOP!!! For some reason, if you do, at least in the current version of .NET, the compiler will fail to do its job and it will just hard code this variable to contain the value 2 always, no matter what. Why? who the fuck knows. Hand writing the subtraction inside of the loop works, and extracting the variable also fixes this issue. If I told anyone, they would not believe me... fucking Microsoft, I swear to God!
+            for (int i = 0; i < args.Length; ++i)
             {
-                int argsRemaining = args.Length - i - 1;
+                argsRemaining = args.Length - i - 1;
                 var arg = args[i];
                 bool commandFound = false;
                 foreach (var cmd in this.commands)
