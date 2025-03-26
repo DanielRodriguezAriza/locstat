@@ -84,8 +84,21 @@
 
         public void Run(string[] args)
         {
-
+            ParseCommands(args);
             this.handler.HandlePath(this.path);
+        }
+
+        private void ParseCommands(string[] args)
+        {
+            foreach (var arg in args)
+            {
+                foreach (var cmd in this.commands)
+                {
+                    if (cmd.ShortCommand == arg || cmd.LongCommand == arg)
+                    {
+                    }
+                }
+            }
         }
 
         private void Log(string msg)
