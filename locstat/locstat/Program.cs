@@ -68,7 +68,7 @@
                     LongCommand = "--debug-enabled",
                     Arguments = new string[] { },
                     Description = "Enable debug logging.",
-                    Function = null
+                    Function = CmdDebugEnabled
                 }
             };
         }
@@ -119,6 +119,11 @@
                 default:
                     throw new Exception($"Unknown mode for command {cmdName} : \"{modeString}\"");
             }
+        }
+
+        public void CmdDebugEnabled(string cmdName, string[] args, int index)
+        {
+            this.config.DebugEnabled = true;
         }
     }
 
