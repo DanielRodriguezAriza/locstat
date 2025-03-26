@@ -32,9 +32,11 @@
         private LocStatHandler handler;
         private Command[] commands;
         private string path;
+        private bool helpWasExecuted;
 
         public LocStatProgram()
         {
+            this.helpWasExecuted = false;
             this.path = "./";
             this.handler = new LocStatHandler();
             this.commands = new Command[]
@@ -85,6 +87,11 @@
         public void Run(string[] args)
         {
             ParseCommands(args);
+
+            // Do not run any code if the user has asked for help
+            if (this.helpWasExecuted)
+                return;
+
             this.handler.HandlePath(this.path);
         }
 
@@ -128,6 +135,7 @@
 
         private void CmdHelp(string cmdName, string[] args, int index)
         {
+            this.helpWasExecuted = true;
             Log("Help:");
             foreach (var cmd in commands)
                 Log($"{cmd.ShortCommand} {cmd.LongCommand} {cmd.Arguments} {cmd.Description}");
