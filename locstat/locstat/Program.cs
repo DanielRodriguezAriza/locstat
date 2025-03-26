@@ -4,8 +4,8 @@
     {
         public string ShortCommand { get; set; }
         public string LongCommand { get; set; }
+        public string[] Arguments { get; set; }
         public string Description { get; set; }
-        public string Arguments { get; set; }
         public Action<string, int> Function { get; set; }
     }
 
@@ -29,11 +29,23 @@
 
     public class LocStatHandlerProgram
     {
-        public LocStatHandler Handler { get; set; }
+        private LocStatHandler handler;
+        private Command[] commands;
 
         public LocStatHandlerProgram()
         {
-            this.Handler = new LocStatHandler();
+            this.handler = new LocStatHandler();
+            this.commands = new Command[]
+            {
+                new Command
+                {
+                    ShortCommand = "-h",
+                    LongCommand = "--help",
+                    Arguments = new string[] { "fsa" },
+                    Description = "Display this help message",
+                    Function = null
+                }
+            };
         }
 
         public void Run(string[] args)
