@@ -6,7 +6,7 @@
         public string LongCommand { get; set; }
         public string[] Arguments { get; set; }
         public string Description { get; set; }
-        public Action<string, int> Function { get; set; }
+        public Action<string[], int> Function { get; set; }
     }
 
     public struct LocStatHandlerConfig
@@ -43,7 +43,7 @@
                     LongCommand = "--help",
                     Arguments = new string[] { },
                     Description = "Display this help message.",
-                    Function = null
+                    Function = CmdHelp
                 },
                 new Command
                 {
@@ -75,6 +75,18 @@
         public void Run(string[] args)
         {
 
+        }
+
+        private void Log(string msg)
+        {
+            Console.WriteLine(msg);
+        }
+
+        private void CmdHelp(string[] args, int index)
+        {
+            Log("Help:");
+            foreach (var cmd in commands)
+                Log($"{cmd.ShortCommand} {cmd.LongCommand} {cmd.Arguments} {cmd.Description}");
         }
     }
 
