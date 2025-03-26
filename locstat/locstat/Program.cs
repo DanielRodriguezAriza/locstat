@@ -41,8 +41,32 @@
                 {
                     ShortCommand = "-h",
                     LongCommand = "--help",
-                    Arguments = new string[] { "fsa" },
-                    Description = "Display this help message",
+                    Arguments = new string[] { },
+                    Description = "Display this help message.",
+                    Function = null
+                },
+                new Command
+                {
+                    ShortCommand = "-R",
+                    LongCommand = "--allow-recursive",
+                    Arguments = new string[] { },
+                    Description = "Allow recursively searching through child directories for files.",
+                    Function = null
+                },
+                new Command
+                {
+                    ShortCommand = "-E",
+                    LongCommand = "--allowed-extensions",
+                    Arguments = new string[] { "<mode>", "<extensions>" },
+                    Description = "Allow only the specified extensions to be counted. The extensions are specified in a comma separated string. Modes are: set, add, remove",
+                    Function = null
+                },
+                new Command
+                {
+                    ShortCommand = "-d",
+                    LongCommand = "--debug-enabled",
+                    Arguments = new string[] { },
+                    Description = "Enable debug logging.",
                     Function = null
                 }
             };
