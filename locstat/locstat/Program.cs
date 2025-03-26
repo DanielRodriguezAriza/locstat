@@ -142,29 +142,30 @@
 
     public class LocStatHandler
     {
-        private LocStatHandlerConfig config;
-        private long totalLines = 0;
-        private Dictionary<string, long> foundExtensions;
+        public long TotalLines { get; private set; }
+        public LocStatHandlerConfig Config { get; set; }
+        public Dictionary<string, long> FoundExtensions { get; private set; }
 
         public LocStatHandler(LocStatHandlerConfig config)
         {
-            this.config = config;
-            this.foundExtensions = new Dictionary<string, long>();
+            this.Config = config;
+            this.FoundExtensions = new Dictionary<string, long>();
         }
 
         public LocStatHandler()
         {
-            this.config = new LocStatHandlerConfig();
-            this.foundExtensions = new Dictionary<string, long>();
+            this.TotalLines = 0;
+            this.Config = new LocStatHandlerConfig();
+            this.FoundExtensions = new Dictionary<string, long>();
         }
 
         private void AddFoundExtension(string extension, long lineCount)
         {
-            if (this.foundExtensions.ContainsKey(extension))
-                this.foundExtensions[extension] += lineCount;
+            if (this.FoundExtensions.ContainsKey(extension))
+                this.FoundExtensions[extension] += lineCount;
             else
-                this.foundExtensions.Add(extension, lineCount);
-            totalLines += lineCount;
+                this.FoundExtensions.Add(extension, lineCount);
+            TotalLines += lineCount;
         }
 
         private void Log(string msg)
@@ -174,7 +175,7 @@
 
         private void DebugLog(string msg)
         {
-            if (this.config.DebugEnabled)
+            if (this.Config.DebugEnabled)
                 Log(msg);
         }
 
@@ -201,12 +202,12 @@
 
             Log("Lines Per Language:");
             Log("{");
-            foreach (var entry in foundExtensions)
+            foreach (var entry in FoundExtensions)
             {
                 Log($"  \"{entry.Key}\" : {entry.Value}, ");
             }
             Log("}");
-            Log($"Total Lines Counted: {totalLines}");
+            Log($"Total Lines Counted: {TotalLines}");
         }
 
         public long HandleDirectory(string path)
@@ -225,7 +226,7 @@
             foreach (var file in files)
                 lineCount += HandleFile(file);
 
-            if (this.config.AllowRecursive)
+            if (this.Config.AllowRecursive)
             {
                 DirectoryInfo[] dirs = directory.GetDirectories();
                 foreach (var child in dirs)
@@ -247,7 +248,7 @@
             string fileName = fileInfo.Name;
             string extension = fileInfo.Extension.ToLowerInvariant();
 
-            if (!this.config.AllowedExtensions.Contains(extension))
+            if (!this.Config.AllowedExtensions.Contains(extension))
                 return 0;
 
             DebugLog($"Handling file: \"{fileInfo.FullName}\"");
@@ -272,16 +273,6 @@
             }
 
             return lineCount;
-        }
-
-        public void SetConfig(LocStatHandlerConfig config)
-        {
-            this.config = config;
-        }
-
-        public LocStatHandlerConfig GetConfig()
-        {
-            return this.config;
         }
     }
 
