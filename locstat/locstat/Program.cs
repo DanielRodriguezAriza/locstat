@@ -90,14 +90,34 @@
 
         private void ParseCommands(string[] args)
         {
+            int currentIndex = 0;
+            int argsRemaining = args.Length;
             foreach (var arg in args)
             {
+                --argsRemaining;
+                bool commandFound = false;
                 foreach (var cmd in this.commands)
                 {
                     if (cmd.ShortCommand == arg || cmd.LongCommand == arg)
                     {
+                        commandFound = true;
+
+                        if (argsRemaining < cmd.Arguments.Length)
+                        {
+                            throw new Exception($"Not enough arguments found : {cmd.Arguments.Length} were expected, but {argsRemaining} were found!");
+                        }
+
+                        cmd.Function(cmd.LongCommand, args, currentIndex);
+
+                        break;
                     }
                 }
+
+                if (!commandFound)
+                {
+                    throw new Exception($"Unknown argument found : \"{arg}\"");
+                }
+                ++currentIndex;
             }
         }
 
