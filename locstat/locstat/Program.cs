@@ -169,7 +169,6 @@
             totalLines += lineCount;
         }
 
-
         private void Log(string msg)
         {
             Console.WriteLine(msg);
@@ -179,34 +178,6 @@
         {
             if (this.config.DebugEnabled)
                 Log(msg);
-        }
-
-        public void HandlePath(string path, string[] args)
-        {
-            // TODO : Handle cases where the number of args is not valid (eg: -E with no further params afterwards...)
-            for (int i = 0; i < args.Length; ++i)
-            {
-                if (args[i] == "-R" || args[i] == "--allow-recursive") // Shitty, make real argument parsing system so that other (unknown) args will fail when given.
-                {
-                    this.config.AllowRecursive = true;
-                }
-                else
-                if (args[i] == "-E" || args[i] == "--allowed-extension")
-                {
-                    string[] allowedExtensions = args[i + 1].Split(',');
-                    foreach (var extension in allowedExtensions)
-                        extension.Trim();
-                    List<string> newExtensions = new List<string>(allowedExtensions);
-                    this.config.AllowedExtensions = newExtensions;
-                }
-                else
-                if (args[i] == "-D" || args[i] == "--debug-enabled")
-                {
-                    this.config.DebugEnabled = bool.Parse(args[i + 1]);
-                }
-            }
-
-            HandlePath(path);
         }
 
         public void HandlePath(string path)
@@ -311,7 +282,7 @@
         static void Main(string[] args)
         {
             LocStatHandler handler = new LocStatHandler();
-            handler.HandlePath("./", args);
+            // handler.HandlePath("./", args);
         }
     }
 }
