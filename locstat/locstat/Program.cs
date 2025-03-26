@@ -27,14 +27,14 @@
         }
     }
 
-    public class LocStatHandlerProgram
+    public class LocStatProgram
     {
         private LocStatHandler handler;
         private Command[] commands;
         private LocStatHandlerConfig config;
         private string path;
 
-        public LocStatHandlerProgram()
+        public LocStatProgram()
         {
             this.path = "./";
             this.config = new LocStatHandlerConfig();
