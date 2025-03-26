@@ -87,7 +87,7 @@
         {
 
             this.handler = new LocStatHandler(this.config);
-            this.handler.HandlePath("./"); // TODO : Maybe improve and add a custom path param so that we can specify the path manually? altough it's pretty nice to just run it anywhere you invoke it with no extra args, so yeah... maybe make path default to ./ if no args are given?
+            this.handler.HandlePath(this.path);
         }
 
         private void Log(string msg)
