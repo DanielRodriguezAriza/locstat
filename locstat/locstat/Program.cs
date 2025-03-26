@@ -31,13 +31,12 @@
     {
         private LocStatHandler handler;
         private Command[] commands;
-        private LocStatHandlerConfig config;
         private string path;
 
         public LocStatProgram()
         {
             this.path = "./";
-            this.config = new LocStatHandlerConfig();
+            this.handler = new LocStatHandler();
             this.commands = new Command[]
             {
                 new Command
@@ -86,7 +85,6 @@
         public void Run(string[] args)
         {
 
-            this.handler = new LocStatHandler(this.config);
             this.handler.HandlePath(this.path);
         }
 
