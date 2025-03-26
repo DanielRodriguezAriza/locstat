@@ -102,7 +102,7 @@
 
         private void CmdAllowRecursive(string cmdName, string[] args, int index)
         {
-            this.config.AllowRecursive = true;
+            this.handler.Config.AllowRecursive = true;
         }
 
         private void CmdAllowedExtensions(string cmdName, string[] args, int index)
@@ -115,14 +115,14 @@
             switch (modeString)
             {
                 case "set":
-                    this.config.AllowedExtensions = new List<string>(extensions);
+                    this.handler.Config.AllowedExtensions = new List<string>(extensions);
                     break;
                 case "add":
-                    this.config.AllowedExtensions.AddRange(extensions);
+                    this.handler.Config.AllowedExtensions.AddRange(extensions);
                     break;
                 case "remove":
                     foreach (var ext in extensions)
-                        this.config.AllowedExtensions.Remove(ext);
+                        this.handler.Config.AllowedExtensions.Remove(ext);
                     break;
                 default:
                     throw new Exception($"Unknown mode for command {cmdName} : \"{modeString}\"");
@@ -131,7 +131,7 @@
 
         private void CmdDebugEnabled(string cmdName, string[] args, int index)
         {
-            this.config.DebugEnabled = true;
+            this.handler.Config.DebugEnabled = true;
         }
 
         private void CmdSetPath(string cmdName, string[] args, int index)
@@ -142,9 +142,9 @@
 
     public class LocStatHandler
     {
-        public long TotalLines { get; private set; }
-        public LocStatHandlerConfig Config { get; set; }
-        public Dictionary<string, long> FoundExtensions { get; private set; }
+        public long TotalLines;
+        public LocStatHandlerConfig Config;
+        public Dictionary<string, long> FoundExtensions;
 
         public LocStatHandler(LocStatHandlerConfig config)
         {
