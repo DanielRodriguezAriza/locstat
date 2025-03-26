@@ -27,6 +27,21 @@
         }
     }
 
+    public class LocStatHandlerProgram
+    {
+        public LocStatHandler Handler { get; set; }
+
+        public LocStatHandlerProgram()
+        {
+            this.Handler = new LocStatHandler();
+        }
+
+        public void Run(string[] args)
+        {
+
+        }
+    }
+
     public class LocStatHandler
     {
         LocStatHandlerConfig config;
