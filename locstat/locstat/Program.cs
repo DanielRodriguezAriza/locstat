@@ -32,9 +32,11 @@
         private LocStatHandler handler;
         private Command[] commands;
         private LocStatHandlerConfig config;
+        private string path;
 
         public LocStatHandlerProgram()
         {
+            this.path = "./";
             this.config = new LocStatHandlerConfig();
             this.commands = new Command[]
             {
@@ -69,6 +71,14 @@
                     Arguments = new string[] { },
                     Description = "Enable debug logging.",
                     Function = CmdDebugEnabled
+                },
+                new Command
+                {
+                    ShortCommand = "-p",
+                    LongCommand = "--path",
+                    Arguments = new string[] { "<path>"},
+                    Description = "Specify the path where the command will be executed.",
+                    Function = CmdSetPath
                 }
             };
         }
@@ -121,9 +131,14 @@
             }
         }
 
-        public void CmdDebugEnabled(string cmdName, string[] args, int index)
+        private void CmdDebugEnabled(string cmdName, string[] args, int index)
         {
             this.config.DebugEnabled = true;
+        }
+
+        private void CmdSetPath(string cmdName, string[] args, int index)
+        {
+            this.path = args[index + 1];
         }
     }
 
